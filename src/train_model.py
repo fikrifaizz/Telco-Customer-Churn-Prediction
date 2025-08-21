@@ -14,7 +14,7 @@ ytrain = data_train['Churn']
 xtest = data_test.drop('Churn', axis=1)
 ytest = data_test['Churn']
 
-mlflow.sklearn.autolog()
+mlflow.sklearn.autolog(log_models=False)
 with mlflow.start_run():
     start = time.time()
     def objective(trial):
@@ -55,4 +55,5 @@ with mlflow.start_run():
     mlflow.log_metric("best_precision_score", study.best_trial.user_attrs["precision_scores"])
     mlflow.log_metric("best_recall_score", study.best_trial.user_attrs["recall_scores"])
     mlflow.log_metric("training_time_sec", elapsed)
-    mlflow.sklearn.log_model(study.best_trial.user_attrs["model"], "model")
+    best_model = study.best_trial.user_attrs["model"]
+    mlflow.sklearn.log_model(best_model, artifact_path="model")
